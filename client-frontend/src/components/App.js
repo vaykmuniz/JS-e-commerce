@@ -1,11 +1,11 @@
-import './App.css';
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import Header from './Header';
 
-const App = () => {
-  return (
-    <div className="App">
-      <p>Inside app comp</p>
-    </div>
-  );
-};
+const App = () => (
+  <BrowserRouter>
+    <Header />
+  </BrowserRouter>
+)
 
 export default App;
