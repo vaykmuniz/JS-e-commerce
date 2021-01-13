@@ -1,8 +1,9 @@
 import React from 'react';
+import { Spinner } from 'react-bootstrap';
 
 const Home = () => {
     return (
-        <p>Home</p>
+        <Spinner animation="border" variant="primary" />
     )
 };
 

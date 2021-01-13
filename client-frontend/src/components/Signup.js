@@ -1,12 +1,68 @@
-import React from 'react';
+import React, {useState} from 'react';
+import isEmail from 'validator/lib/isEmail';
+import isEmpty from 'validator/lib/isEmpty';
+import equals from 'validator/lib/equals';
 import { Link } from 'react-router-dom';
+import {Spinner} from 'react-bootstrap';
+
 
 import './Signup.css';
+import {showDangerMsg, showSuccessMsg} from '../helpers/msg';
 
 const Signup = () => {
 
+    //vars
+    const[formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        password2: '',
+        successMsg: false,
+        errorMsg: false,
+        loading: true,
+    });
+ 
+    const {username, email, password, password2, successMsg, errorMsg, loading} = formData;
+    
+    //functions
+    const handleChange = evt => {
+        setFormData({
+            ...formData,
+            [evt.target.name]: evt.target.value,
+            errorMsg: '',
+            successMsg: '',
+        })
+    };
+
+    const handleSubmit = evt => {
+        evt.preventDefault();
+        
+        if (isEmpty(username) || isEmpty(email) || isEmpty(password) || isEmpty(password2)) {
+            setFormData({
+                ...formData,
+                errorMsg: 'All fields are required' 
+            })
+        } else if(!isEmail(email)) {
+            setFormData({
+                ...formData,
+                errorMsg: 'Invalid email'
+            })
+        } else if(!equals(password, password2)) {
+            setFormData({
+                ...formData,
+                errorMsg: 'Passwords dont match'
+            })
+        } else {
+            setFormData({
+                ...formData,
+                successMsg: 'Validation success!'
+            })
+        }
+    };
+
+    //views
     const showSignupForm = () => (
-        <form className='signup-form'>
+        <form className='signup-form' onSubmit={handleSubmit} noValidate>
             {/*username*/}
             <div className='form-group input-group'>
                 <div className='input-group-prepend'>
@@ -15,7 +71,9 @@ const Signup = () => {
                     </span>
                 </div>
                 <input
-                    name=''
+                    onChange={handleChange}
+                    name='username'
+                    value={username}
                     className='form-control'
                     placeholder='Username'
                     type='text'/>
@@ -28,7 +86,9 @@ const Signup = () => {
                     </span>
                 </div>
                 <input
-                    name=''
+                    onChange={handleChange}
+                    name='email'
+                    value={email}
                     className='form-control'
                     placeholder='Email address'
                     type='email'/>
@@ -41,6 +101,9 @@ const Signup = () => {
                     </span>
                 </div>
                 <input
+                    onChange={handleChange}
+                    name='password'
+                    value={password}
                     className='form-control'
                     placeholder='Create password'
                     type='password' />
@@ -53,6 +116,9 @@ const Signup = () => {
                     </span>
                 </div>
                 <input
+                    onChange={handleChange}
+                    name='password2'
+                    value={password2}
                     className='form-control'
                     placeholder='Confirm password'
                     type='password' />
@@ -72,7 +138,16 @@ const Signup = () => {
 
     return (
         <div className='signup-container row vh-100'>
-            <div className='col-5 mx-auto align-self-center'>{showSignupForm()}</div>          
+            <div className='col-5 mx-auto align-self-center'>
+                {loading && 
+                    <div className="text-center pb-5">
+                        <Spinner animation="grow" variant="primary" />
+                    </div>
+                }
+                {successMsg && showSuccessMsg(successMsg)}
+                {errorMsg && showDangerMsg(errorMsg)}
+                {showSignupForm()}
+            </div>       
         </div>
     );
         
