@@ -8,18 +8,20 @@ import {Spinner} from 'react-bootstrap';
 
 import './Signup.css';
 import {showDangerMsg, showSuccessMsg} from '../helpers/msg';
+import { signup } from '../api/auth.js';
+
 
 const Signup = () => {
 
     //vars
     const[formData, setFormData] = useState({
-        username: '',
-        email: '',
-        password: '',
-        password2: '',
+        username: 'joe',
+        email: 'joe@gmail.com',
+        password: 'asd123',
+        password2: 'asd123',
         successMsg: false,
         errorMsg: false,
-        loading: true,
+        loading: false,
     });
  
     const {username, email, password, password2, successMsg, errorMsg, loading} = formData;
@@ -53,10 +55,29 @@ const Signup = () => {
                 errorMsg: 'Passwords dont match'
             })
         } else {
-            setFormData({
-                ...formData,
-                successMsg: 'Validation success!'
-            })
+            const { username, email, password } = formData;
+            const data = { username, email, password };
+
+            setFormData({...formData, loading: true});
+
+            signup(data)
+                .then(response => {
+                    console.log('Axios signup WORKED:', response);
+                    setFormData({
+                        username: '',
+                        email: '',
+                        password: '',
+                        password2: '',
+                        loading: false,
+                        successMsg: response.data.successMessage
+                    });
+
+                })
+                .catch (err => {
+                    console.log('Axios signup error: ', err);
+                    setFormData({...formData, loading: false});
+                })
+
         }
     };
 
@@ -149,8 +170,7 @@ const Signup = () => {
                 {showSignupForm()}
             </div>       
         </div>
-    );
-        
+    );  
 };
 
 export default Signup;
