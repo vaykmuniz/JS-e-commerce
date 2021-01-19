@@ -58,8 +58,6 @@ const Signup = () => {
             const { username, email, password } = formData;
             const data = { username, email, password };
 
-            setFormData({...formData, loading: true});
-
             signup(data)
                 .then(response => {
                     console.log('Axios signup WORKED:', response);
@@ -68,7 +66,7 @@ const Signup = () => {
                         email: '',
                         password: '',
                         password2: '',
-                        loading: false,
+                        loading: true,
                         successMsg: response.data.successMessage
                     });
 

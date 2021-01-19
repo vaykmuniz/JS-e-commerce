@@ -1,7 +1,9 @@
 const express = require('express');
-const connectDB = require('./database/db');
 const cors = require('cors');
 const morgan = require('morgan');
+
+const connectDB = require('./database/db');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -10,14 +12,12 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
+//routezzzzzzzz
+app.use('/api/auth', authRoutes);
+
 //db
 connectDB();
 
-//routezzzzzz
-
-app.get('/', (req, res) => {
-    res.send("we r in guys");
-});
 
 const port = process.env.PORT || 5000;
 
