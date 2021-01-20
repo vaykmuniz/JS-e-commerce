@@ -17,8 +17,8 @@ const Signup = () => {
     const[formData, setFormData] = useState({
         username: 'joe',
         email: 'joe@gmail.com',
-        password: 'asd123',
-        password2: 'asd123',
+        password: '123',
+        password2: '123',
         successMsg: false,
         errorMsg: false,
         loading: false,
