@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import {Spinner} from 'react-bootstrap';
 
 
-import './Signup.css';
+import './css/Main.css';
 import {showDangerMsg, showSuccessMsg} from '../helpers/msg';
 import { signup } from '../api/auth.js';
 
@@ -15,10 +15,10 @@ const Signup = () => {
 
     //vars
     const[formData, setFormData] = useState({
-        username: 'joe',
-        email: 'joe@gmail.com',
-        password: '123',
-        password2: '123',
+        username: '',
+        email: '',
+        password: '',
+        password2: '',
         successMsg: false,
         errorMsg: false,
         loading: false,
@@ -26,7 +26,7 @@ const Signup = () => {
  
     const {username, email, password, password2, successMsg, errorMsg, loading} = formData;
     
-    //functions
+    //funções
     const handleChange = evt => {
         setFormData({
             ...formData,
@@ -42,21 +42,23 @@ const Signup = () => {
         if (isEmpty(username) || isEmpty(email) || isEmpty(password) || isEmpty(password2)) {
             setFormData({
                 ...formData,
-                errorMsg: 'All fields are required' 
+                errorMsg: 'Todos os campos são necessários' 
             })
         } else if(!isEmail(email)) {
             setFormData({
                 ...formData,
-                errorMsg: 'Invalid email'
+                errorMsg: 'Email inválido'
             })
         } else if(!equals(password, password2)) {
             setFormData({
                 ...formData,
-                errorMsg: 'Passwords dont match'
+                errorMsg: 'Passwords não combinam'
             })
         } else {
             const { username, email, password } = formData;
             const data = { username, email, password };
+
+            setFormData({ ...formData, loading: true});
 
             signup(data)
                 .then(response => {
@@ -150,13 +152,13 @@ const Signup = () => {
             </div>
             {/* already have account */}
             <p className='text-center text-dark font-weight-bold '>
-                Have an account? <Link to='/signin'>Log in</Link>
+                Tem uma conta? <Link to='/signin'>Entre aqui</Link>
             </p>
         </form>
     );
 
     return (
-        <div className='signup-container row vh-100'>
+        <div className='sign-container row vh-100'>
             <div className='col-5 mx-auto align-self-center'>
                 {loading && 
                     <div className="text-center pb-5">

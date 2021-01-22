@@ -29,3 +29,13 @@ exports.validatorResult = (req, res, next) => {
 
     next();
 };
+
+exports.signinValidator = [
+    check('email')
+        .isEmail()
+        .normalizeEmail()
+        .withMessage('Email invalio'),
+    check('password')
+        .isLength({ min: 6 })
+        .withMessage('Password deve ter no mínimo 6 chracteres')    
+];

@@ -1,6 +1,8 @@
-const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
+const User = require('../models/User');
+const { jwtSecret, jwtExpire } = require('../config/keys');
 
 exports.signupController = async (req, res) => {
     const { username, email, password } = req.body;
@@ -30,4 +32,49 @@ exports.signupController = async (req, res) => {
             errorMessage: 'Server error',
         });
     }
+};
+
+exports.signinController = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({
+                errorMessage: "Informações inválidas",
+            });
+        };
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({
+                errorMessage: "Informações inválidas",
+            });            
+        };
+
+        const payload = {
+            user: {
+                _id: user._id,
+            },
+        };
+
+        await jwt.sign(payload, jwtSecret, { expiresIn: jwtExpire }, (err, token) => {
+            if (err) {
+                console.log('jwt error: ', err);
+            };
+            const { _id, username, email, role } = user;
+
+            res.json({
+                token,
+                user: { _id, username, email, role },
+            });
+        });
+
+    } catch (err) {
+        console.log('inside signin ctrlr err:', err);
+        res.status(500).json({
+            errorMessage: 'Server error',
+        });
+    }
+  
 };

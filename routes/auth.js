@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { signupValidator, validatorResult } = require('../middleware/validator');
-const { signupController } = require('../controllers/auth');
+const { signupValidator, signinValidator, validatorResult } = require('../middleware/validator');
+const { signupController, signinController } = require('../controllers/auth');
 
 
 addHeader = function (req, res, next){
@@ -12,5 +12,7 @@ addHeader = function (req, res, next){
 };
 
 router.post('/signup', addHeader, signupValidator, validatorResult, signupController );
+
+router.post('/signin', addHeader, signinValidator, validatorResult, signinController );
 
 module.exports = router;
