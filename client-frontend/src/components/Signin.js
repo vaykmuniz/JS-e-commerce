@@ -7,6 +7,7 @@ import {Spinner} from 'react-bootstrap';
 import './css/Main.css';
 import {showDangerMsg } from '../helpers/msg';
 import { signin } from '../api/auth';
+import { setAuthenticaetion } from '../helpers/auth';
 
 
 const Signin = () => {
@@ -38,12 +39,12 @@ const Signin = () => {
             setFormData({
                 ...formData,
                 errorMsg: 'Todos os campos são necessários' 
-            })
+            });
         } else if(!isEmail(email)) {
             setFormData({
                 ...formData,
                 errorMsg: 'Email inválido'
-            })
+            });
         } else {
             const { email, password } = formData;
             const data = { email, password };
@@ -51,6 +52,12 @@ const Signin = () => {
             setFormData({ ...formData, loading: true});
 
             signin(data)
+                .then((response) => {
+                    setAuthenticaetion(response.data.token, response.data.user);
+                })
+                .catch((err) => {
+                    console.log('signin api err: ', err);
+                });
 
         }
     };
