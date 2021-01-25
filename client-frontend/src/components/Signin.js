@@ -1,16 +1,26 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect } from 'react';
 import isEmail from 'validator/lib/isEmail';
 import isEmpty from 'validator/lib/isEmpty';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {Spinner} from 'react-bootstrap';
 
 import './css/Main.css';
 import {showDangerMsg } from '../helpers/msg';
 import { signin } from '../api/auth';
-import { setAuthenticaetion } from '../helpers/auth';
+import { setAuthentication, isAuthenticated } from '../helpers/auth';
 
 
 const Signin = () => {
+
+    let history = useHistory();
+
+    useEffect(() => {
+        if (isAuthenticated() && isAuthenticated().role === 1) {
+            history.push('/admin/dashboard');
+        } else if (isAuthenticated() && isAuthenticated().role === 0) {
+            history.push('/user/dashboard/');
+        }
+    }, [history]);
 
     //vars
     const[formData, setFormData] = useState({
@@ -18,10 +28,9 @@ const Signin = () => {
         password: '',
         errorMsg: false,
         loading: false,
-        redirectToDashboard: false,
     });
     
-    const { email, password, errorMsg, loading, redirectToDashboard } = formData;
+    const { email, password, errorMsg, loading } = formData;
 
     //funções
     const handleChange = evt => {
@@ -53,7 +62,13 @@ const Signin = () => {
 
             signin(data)
                 .then((response) => {
-                    setAuthenticaetion(response.data.token, response.data.user);
+                    setAuthentication(response.data.token, response.data.user);
+                
+                    if (isAuthenticated() && isAuthenticated().role === 1) {
+                        history.push('/admin/dashboard');
+                    } else {
+                        history.push('/user/dashboard/');
+                    }
                 })
                 .catch((err) => {
                     console.log('signin api err: ', err);

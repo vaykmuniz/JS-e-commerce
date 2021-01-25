@@ -1,17 +1,28 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import isEmail from 'validator/lib/isEmail';
 import isEmpty from 'validator/lib/isEmpty';
 import equals from 'validator/lib/equals';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {Spinner} from 'react-bootstrap';
 
 
 import './css/Main.css';
 import {showDangerMsg, showSuccessMsg} from '../helpers/msg';
 import { signup } from '../api/auth.js';
+import { isAuthenticated } from '../helpers/auth';
 
 
 const Signup = () => {
+
+    let history = useHistory();
+
+    useEffect(() => {
+        if (isAuthenticated() && isAuthenticated().role === 1) {
+            history.push('/admin/dashboard');
+        } else if (isAuthenticated() && isAuthenticated().role === 0) {
+            history.push('/user/dashboard/');
+        }
+    }, [history]);
 
     //vars
     const[formData, setFormData] = useState({
